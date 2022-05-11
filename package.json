@@ -20,13 +20,12 @@
     "type": "git",
     "url": "git+https://github.com/xulihang/barcode-detector-polyfill.git"
   },
-  "source": "src/BarcodeDetector.ts",
+  "source": "src/barcode-detector.ts",
+  "main": "./dist/barcode-detector.js",
   "exports": {
     "require": "./dist/barcode-detector.cjs",
     "default": "./dist/barcode-detector.modern.js"
   },
-  "main": "./dist/barcode-detector.cjs",
-  "module": "./dist/barcode-detector.module.js",
   "unpkg": "./dist/barcode-detector.umd.js",
   "amdName": "BarcodeDetectorPolyfill",
   "scripts": {
