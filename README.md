@@ -12,7 +12,7 @@ if (!("BarcodeDetector" in window)) {
   window.BarcodeDetector = BarcodeDetector
 }
 
-async decode(imgEl) {
+async function decode(imgEl) {
   //create a barcodeDetector and specify the barcode format
   const barcodeDetector = new BarcodeDetector({ formats: ["qr_code"] })
 
