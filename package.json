@@ -1,0 +1,22 @@
+{
+  "name": "barcode-detector-polyfill",
+  "type": "module",
+  "source": "src/BarcodeDetector.ts",
+  "exports": {
+    "require": "./dist/barcode-detector.cjs",
+    "default": "./dist/barcode-detector.modern.js"
+  },
+  "main": "./dist/barcode-detector.cjs",
+  "module": "./dist/barcode-detector.module.js",
+  "unpkg": "./dist/barcode-detector.umd.js",
+  "scripts": {
+    "build": "microbundle",
+    "dev": "microbundle watch"
+  },
+  "devDependencies": {
+    "microbundle": "^0.15.0"
+  },
+  "dependencies": {
+    "dynamsoft-javascript-barcode": "^9.0.2"
+  }
+}
