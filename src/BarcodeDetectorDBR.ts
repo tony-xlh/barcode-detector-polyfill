@@ -60,6 +60,14 @@ export default class BarcodeDetector {
     }
     
   }
+  
+  static setLicense(license:string) {
+    BarcodeReader.license = license;
+  }
+  
+  static getLicense(license:string) : string {
+    return BarcodeReader.license;
+  }
 
   async initDBR(formats?:BarcodeFormat[]){
     this.reader = await BarcodeScanner.createInstance();
@@ -101,13 +109,20 @@ export default class BarcodeDetector {
 
     minX = result.localizationResult.x1;
     minY = result.localizationResult.y1;
-    for (let index = 0; index < 4; index++) {
+    console.log(result);
+    console.log(result.localizationResult.x1);
+    console.log(result.barcodeText);
+    for (let index = 1; index < 5; index++) {
       const x = result.localizationResult["x"+index];
       const y = result.localizationResult["y"+index];
       minX = Math.min(x,minX);
       minY = Math.min(y,minY);
       maxX = Math.max(x,maxX);
       maxY = Math.max(y,maxY);
+      let point:Point2D;
+      point.x = x;
+      point.y = y;
+      cornerPoints.push(point);
     }
 
     return { 
