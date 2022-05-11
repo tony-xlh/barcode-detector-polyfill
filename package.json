@@ -1,16 +1,21 @@
 {
   "name": "barcode-detection",
   "type": "module",
-  "author": {
-    "name": "Xu Lihang"
-  },
-  "version": "0.0.1",
-  "bugs": {
-    "url": "https://github.com/xulihang/barcode-detector-polyfill/issues"
-  },
+  "version": "0.1.0",
   "description": "Polyfill of the Barcode Detection API based on Dynamsoft Barcode Reader",
   "homepage": "https://github.com/xulihang/barcode-detector-polyfill/#readme",
   "license": "MIT",
+  "author": {
+    "name": "Xu Lihang"
+  },
+  "bugs": {
+    "url": "https://github.com/xulihang/barcode-detector-polyfill/issues"
+  },
+  "files": [
+    "dist/*.js",
+    "dist/*.cjs",
+    "dist/*.d.ts"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xulihang/barcode-detector-polyfill.git"
@@ -23,6 +28,7 @@
   "main": "./dist/barcode-detector.cjs",
   "module": "./dist/barcode-detector.module.js",
   "unpkg": "./dist/barcode-detector.umd.js",
+  "amdName": "BarcodeDetectorPolyfill",
   "scripts": {
     "build": "microbundle",
     "dev": "microbundle watch"
@@ -32,5 +38,9 @@
   },
   "dependencies": {
     "dynamsoft-javascript-barcode": "^9.0.2"
-  }
+  },
+  "keywords": [
+    "barcode",
+    "qrcode"
+  ]
 }
