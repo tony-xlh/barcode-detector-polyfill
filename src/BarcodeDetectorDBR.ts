@@ -39,28 +39,24 @@ const allSupportedFormats : BarcodeFormat[] = Array.from(mapFormat.keys())
 
 export default class BarcodeDetector {
   private reader: BarcodeReader;
+  private formats: BarcodeFormat[];
   constructor (barcodeDetectorOptions? : BarcodeDetectorOptions) {
     // SPEC: A series of BarcodeFormats to search for in the subsequent detect() calls. If not present then the UA SHOULD 
     // search for all supported formats.
-    const formats = barcodeDetectorOptions?.formats ?? allSupportedFormats
+
+    this.formats = barcodeDetectorOptions?.formats ?? allSupportedFormats
 
     // SPEC: If barcodeDetectorOptions.formats is present and empty, then throw a new TypeError.
-    if (formats.length === 0) {
+    if (this.formats.length === 0) {
       throw new TypeError("") // TODO pick message
     }
 
     // SPEC: If barcodeDetectorOptions.formats is present and contains unknown, then throw a new TypeError.
-    if (formats.includes("unknown")) {
+    if (this.formats.includes("unknown")) {
       throw new TypeError("") // TODO pick message
     }
-    if (barcodeDetectorOptions) {
-      this.initDBR(formats);
-    }else{
-      this.initDBR();
-    }
-    
   }
-  
+
   static setLicense(license:string) {
     BarcodeReader.license = license;
   }
@@ -69,20 +65,19 @@ export default class BarcodeDetector {
     return BarcodeReader.license;
   }
 
-  async initDBR(formats?:BarcodeFormat[]){
+  async init() : Promise<void> {
     this.reader = await BarcodeScanner.createInstance();
-    if (formats) {
+    if (this.formats.length != allSupportedFormats.length) {
+      console.log("update runtime settings for formats");
       let settings = await this.reader.getRuntimeSettings();
       let ids:number;
-
-      for (let index = 0; index < formats.length; index++) {
+      for (let index = 0; index < this.formats.length; index++) {
         if (index === 0) {
-          ids = mapFormat.get(formats[index]);
+          ids = mapFormat.get(this.formats[index]);
         }else{
-          ids = ids || mapFormat.get(formats[index]);
+          ids = ids || mapFormat.get(this.formats[index]);
         }
       }
-      
       settings.barcodeFormatIds = ids;
       await this.reader.updateRuntimeSettings(settings);
     }
@@ -107,21 +102,21 @@ export default class BarcodeDetector {
 
     let minX: number, minY: number, maxX: number, maxY: number;
 
+    //set initial values
     minX = result.localizationResult.x1;
     minY = result.localizationResult.y1;
-    console.log(result);
-    console.log(result.localizationResult.x1);
-    console.log(result.barcodeText);
+    maxX = result.localizationResult.x1;
+    maxY = result.localizationResult.y1;
+    
     for (let index = 1; index < 5; index++) {
       const x = result.localizationResult["x"+index];
       const y = result.localizationResult["y"+index];
+
       minX = Math.min(x,minX);
       minY = Math.min(y,minY);
       maxX = Math.max(x,maxX);
       maxY = Math.max(y,maxY);
-      let point:Point2D;
-      point.x = x;
-      point.y = y;
+      let point:Point2D = {x:x,y:y};
       cornerPoints.push(point);
     }
 
