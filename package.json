@@ -1,5 +1,5 @@
 {
-  "name": "@xulihang/barcode-detector-polyfill",
+  "name": "barcode-detection",
   "type": "module",
   "author": {
     "name": "Xu Lihang"
