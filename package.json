@@ -1,6 +1,20 @@
 {
   "name": "barcode-detector-polyfill",
   "type": "module",
+  "author": {
+    "name": "Xu Lihang"
+  },
+  "version": "0.0.1",
+  "bugs": {
+    "url": "https://github.com/xulihang/barcode-detector-polyfill/issues"
+  },
+  "description": "Polyfill of the Barcode Detection API based on Dynamsoft Barcode Reader",
+  "homepage": "https://github.com/xulihang/barcode-detector-polyfill/#readme",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xulihang/barcode-detector-polyfill.git"
+  },
   "source": "src/BarcodeDetector.ts",
   "exports": {
     "require": "./dist/barcode-detector.cjs",
