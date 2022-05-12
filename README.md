@@ -4,12 +4,30 @@ Polyfill of the Barcode Detection API based on [Dynamsoft Barcode Reader](https:
 
 [Online demo](https://extraordinary-taiyaki-4769a5.netlify.app/)
 
+## Include the library
+
+1. Via CDN:
+
+    ```html
+    <script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.0.2/dist/dbr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/barcode-detection@latest/dist/barcode-detector.umd.js"></script>
+    ```
+
+2. Via npm:
+
+    ```
+    npm install barcode-detection
+    ```
+    
+    Then import the package:
+    
+    ```
+    import {default as BarcodeDetectorPolyfill} from "barcode-detection"    
+    ```
+
 ## Usage
 
 ```js
-import {default as BarcodeDetectorPolyfill} from "barcode-detection"
-
-
 let barcodeDetector;
 
 async function init() {
