@@ -2,6 +2,8 @@
 
 Polyfill of the Barcode Detection API based on [Dynamsoft Barcode Reader](https://www.dynamsoft.com/barcode-reader/overview/).
 
+[Online demo](https://627c7066caa03800ac213a59--extraordinary-taiyaki-4769a5.netlify.app/)
+
 ## Usage
 
 ```js

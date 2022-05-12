@@ -1,7 +1,7 @@
 {
   "name": "barcode-detection",
   "type": "module",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Polyfill of the Barcode Detection API based on Dynamsoft Barcode Reader",
   "homepage": "https://github.com/xulihang/barcode-detector-polyfill/#readme",
   "license": "MIT",
