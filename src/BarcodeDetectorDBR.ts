@@ -65,7 +65,7 @@ export default class BarcodeDetector {
     return BarcodeReader.license;
   }
 
-  async init() : Promise<void> {
+  async init() : Promise<BarcodeReader> {
     this.reader = await BarcodeScanner.createInstance();
     if (this.formats.length != allSupportedFormats.length) {
       console.log("update runtime settings for formats");
@@ -81,6 +81,7 @@ export default class BarcodeDetector {
       settings.barcodeFormatIds = ids;
       await this.reader.updateRuntimeSettings(settings);
     }
+    return this.reader;
   }
 
   static async getSupportedFormats() : Promise<BarcodeFormat[]> {
@@ -88,6 +89,9 @@ export default class BarcodeDetector {
   }
 
   async detect(image : ImageBitmapSource) : Promise<DetectedBarcode[]> {
+    if (!this.reader) {
+      throw new Error("Dynamsoft Barcode Reader has not been initialized.");
+    }
     let results:TextResult[] = await this.reader.decode(image as any);
     let detectedBarcodes:DetectedBarcode[] = [];
     results.forEach(result => {
