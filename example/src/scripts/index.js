@@ -69,6 +69,7 @@ async function initBarcodeDetector(){
 
   fileInput.disabled = "";
   startButton.disabled = "";
+  document.getElementById("status").innerHTML = "";
 }
 
 function loadDevicesAndPlay(){
