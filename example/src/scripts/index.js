@@ -63,7 +63,8 @@ async function initBarcodeDetector(){
     alert('Barcode Detector is not supported by this browser, using the Dynamsoft Barcode Reader polyfill.');
     barcodeDetector = new BarcodeDetectorPolyfill();
     BarcodeDetectorPolyfill.setLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
-    await barcodeDetector.init();
+    let reader = await barcodeDetector.init();
+    console.log(reader); // You can modify the runtime settings of the reader instance.
   }
 
   fileInput.disabled = "";
