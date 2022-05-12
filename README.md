@@ -32,6 +32,8 @@ async function decode(imgEl) {
 }
 ```
 
+You can apply for a license [here](https://www.dynamsoft.com/customer/license/trialLicense?product=dbr).
+
 ## Supported Barcode Symbologies
 
 * Code 11
