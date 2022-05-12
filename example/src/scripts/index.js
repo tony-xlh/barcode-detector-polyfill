@@ -165,10 +165,14 @@ async function decode(){
     console.log("decoding");
     var video = document.getElementsByClassName("camera")[0];
     decoding = true;
-    var barcodes = await barcodeDetector.detect(video);
+    try {
+      var barcodes = await barcodeDetector.detect(video);  
+      console.log(barcodes);
+      drawOverlay(barcodes);
+    } catch (error) {
+      console.log(error);
+    }
     decoding = false;
-    console.log(barcodes);
-    drawOverlay(barcodes);
   }
 }
 
