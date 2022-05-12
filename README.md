@@ -13,13 +13,7 @@ import {default as BarcodeDetectorPolyfill} from "barcode-detection"
 let barcodeDetector;
 
 async function init() {
-  let barcodeDetectorSupported = false;
-  
   if ("BarcodeDetector" in window) {
-    barcodeDetectorSupported = true;
-  }
-  
-  if (barcodeDetectorSupported === true) {
     alert('Barcode Detector supported!');
     barcodeDetector = new window.BarcodeDetector({ formats: ["qr_code"] });
   }else{
