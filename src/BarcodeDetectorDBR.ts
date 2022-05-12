@@ -120,16 +120,13 @@ export default class BarcodeDetector {
       cornerPoints.push(point);
     }
 
+    let boundingBox = new DOMRectReadOnly(minX, minY, maxX - minX, maxY - minY);
+
     return { 
-      boundingBox: DOMRectReadOnly.fromRect({
-        x: minX,
-        y: minY,
-        width: maxX - minX,
-        height: maxY - minY
-      }), 
+      boundingBox: boundingBox, 
       rawValue: result.barcodeText,
       format: mapFormatInv.get(result.barcodeFormat),
       cornerPoints
     };
-  } 
+  }
 }
