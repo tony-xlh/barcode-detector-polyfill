@@ -1,5 +1,5 @@
 import '../styles/index.css';
-import BarcodeDetector from "barcode-detection";
+import {default as BarcodeDetectorPolyfill} from "barcode-detection";
 
 var barcodeDetector;
 var decoding = false;
@@ -51,13 +51,12 @@ initBarcodeDetector();
 async function initBarcodeDetector(){
   if (!('BarcodeDetector' in window)) {
     alert('Barcode Detector is not supported by this browser, using the Dynamsoft Barcode Reader polyfill.');
-    window.BarcodeDetector = BarcodeDetector;
-    barcodeDetector = new BarcodeDetector();
-    BarcodeDetector.setLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
+    barcodeDetector = new BarcodeDetectorPolyfill();
+    BarcodeDetectorPolyfill.setLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
     await barcodeDetector.init();
   } else {
     alert('Barcode Detector supported!');
-    barcodeDetector = new BarcodeDetector();
+    barcodeDetector = new window.BarcodeDetector();
   } 
   fileInput.disabled = "";
   startButton.disabled = "";
