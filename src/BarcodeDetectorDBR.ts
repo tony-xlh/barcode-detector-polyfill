@@ -81,6 +81,7 @@ export default class BarcodeDetector {
       settings.barcodeFormatIds = ids;
       await this.reader.updateRuntimeSettings(settings);
     }
+    
     return this.reader;
   }
 
