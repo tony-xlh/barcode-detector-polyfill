@@ -9,9 +9,58 @@
   <script src="dist/barcode-detector.umd.js"></script>
 </head>
 <body>
-  UMD working in progress.
+  Detect an Image: <input id="fileInput" type="file"/>
+  <img id="selectedImg"/>
 </body>
 
 <script>
+var barcodeDetector;
+var initialized = false;
+init();
+
+var fileInput = document.querySelector("#fileInput")
+fileInput.onchange = function(event) {
+
+  if (initialized === false) {
+    alert("The detector is still initializing.");
+    return;
+  }
+  
+  var file = event.target.files[0];
+  var reader = new FileReader();
+				
+  reader.onload = function(e){
+    var img = document.getElementById("selectedImg");
+    img.src = e.target.result;
+    img.onload = async function() {
+      var detectedCodes = await barcodeDetector.detect(img);
+      var json = JSON.stringify(detectedCodes, null, 2);
+      console.log(json);
+      alert(json);
+    }
+  };
+		
+  reader.onerror = function () {
+    console.warn('oops, something went wrong.');
+  };
+		
+	reader.readAsDataURL(file);	
+}
+
+async function init() {
+  if ("BarcodeDetector" in window) {
+    alert('Barcode Detector supported!');
+    barcodeDetector = new window.BarcodeDetector({ formats: ["qr_code"] });
+  }else{
+    alert('Barcode Detector is not supported by this browser, using the Dynamsoft Barcode Reader polyfill.');
+    barcodeDetector = new BarcodeDetectorPolyfill({ formats: ["qr_code"] });
+    
+    //initialize the Dynamsoft Barcode Reader with a license
+    BarcodeDetectorPolyfill.setLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
+    await barcodeDetector.init();
+  }
+  initialized = true;
+}
+
 </script>
 </html>
