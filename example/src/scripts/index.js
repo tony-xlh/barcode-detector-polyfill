@@ -38,7 +38,6 @@ fileInput.onchange = function(event) {
 
 var closeButton = document.querySelector("#closeButton");
 closeButton.onclick = function() {
-  clearInterval(interval);
   stop();
   scannerContainer.style.display = "none";
   home.style.display = "";
@@ -134,6 +133,7 @@ function play(deviceId) {
 }
 
 function stop(){
+  stopDecoding();
   try{
       if (localStream){
           localStream.getTracks().forEach(track => track.stop());
@@ -161,9 +161,13 @@ function updateSVGViewBoxBasedOnVideoSize(){
 }
 
 function startDecoding(){
-  clearInterval(interval);
+  stopDecoding();
   //1000/25=40
   interval = setInterval(decode, 500);
+}
+
+function stopDecoding(){
+  clearInterval(interval);
 }
 
 async function decode(){
