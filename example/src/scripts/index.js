@@ -49,15 +49,24 @@ initBarcodeDetector();
 
 
 async function initBarcodeDetector(){
-  if (!('BarcodeDetector' in window)) {
+  var barcodeDetectorUsable = false;
+  if ('BarcodeDetector' in window) {
+    let formats = await window.BarcodeDetector.getSupportedFormats();
+    if (formats.length > 0) {
+      barcodeDetectorUsable = true;
+    }
+  }
+
+  if (barcodeDetectorUsable === true) {
+    alert('Barcode Detector supported!');
+    barcodeDetector = new window.BarcodeDetector();
+  }else{
     alert('Barcode Detector is not supported by this browser, using the Dynamsoft Barcode Reader polyfill.');
     barcodeDetector = new BarcodeDetectorPolyfill();
     BarcodeDetectorPolyfill.setLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
     await barcodeDetector.init();
-  } else {
-    alert('Barcode Detector supported!');
-    barcodeDetector = new window.BarcodeDetector();
-  } 
+  }
+
   fileInput.disabled = "";
   startButton.disabled = "";
 }
