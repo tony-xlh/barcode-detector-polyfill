@@ -7,21 +7,32 @@ Polyfill of the Barcode Detection API based on [Dynamsoft Barcode Reader](https:
 ## Usage
 
 ```js
-import BarcodeDetector from "barcode-detection"
+import {default as BarcodeDetectorPolyfill} from "barcode-detection"
 
-//polyfill if the browser does not support the Barcode Detection API
-if (!("BarcodeDetector" in window)) {
-  window.BarcodeDetector = BarcodeDetector
+
+let barcodeDetector;
+
+async function init() {
+  let barcodeDetectorSupported = false;
+  
+  if ("BarcodeDetector" in window) {
+    barcodeDetectorSupported = true;
+  }
+  
+  if (barcodeDetectorSupported === true) {
+    alert('Barcode Detector supported!');
+    barcodeDetector = new window.BarcodeDetector({ formats: ["qr_code"] });
+  }else{
+    alert('Barcode Detector is not supported by this browser, using the Dynamsoft Barcode Reader polyfill.');
+    barcodeDetector = new BarcodeDetectorPolyfill({ formats: ["qr_code"] });
+    
+    //initialize the Dynamsoft Barcode Reader with a license
+    BarcodeDetectorPolyfill.setLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
+    await barcodeDetector.init();
+  }
 }
 
 async function decode(imgEl) {
-  //create a barcodeDetector and specify the barcode format
-  const barcodeDetector = new BarcodeDetector({ formats: ["qr_code"] })
-
-  //initialize the Dynamsoft Barcode Reader with a license
-  BarcodeDetector.setLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAwMjI3NzYzLVRYbFhaV0pRY205cSIsIm9yZ2FuaXphdGlvbklEIjoiMTAwMjI3NzYzIn0=");
-  await barcodeDetector.init();
-  
   //decode an image element
   let barcodes = await barcodeDetector.detect(imgEl);
 }
