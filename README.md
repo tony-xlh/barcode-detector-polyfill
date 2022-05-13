@@ -1,6 +1,6 @@
 # barcode-detector-polyfill
 
-Polyfill of the Barcode Detection API based on [Dynamsoft Barcode Reader](https://www.dynamsoft.com/barcode-reader/overview/).
+Polyfill for the Barcode Detection API based on [Dynamsoft Barcode Reader](https://www.dynamsoft.com/barcode-reader/overview/).
 
 [Online demo](https://extraordinary-taiyaki-4769a5.netlify.app/)
 

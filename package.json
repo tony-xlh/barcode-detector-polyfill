@@ -1,8 +1,8 @@
 {
   "name": "barcode-detection",
   "type": "module",
-  "version": "0.3.0",
-  "description": "Polyfill of the Barcode Detection API based on Dynamsoft Barcode Reader",
+  "version": "0.3.1",
+  "description": "Polyfill for the Barcode Detection API based on Dynamsoft Barcode Reader.",
   "homepage": "https://github.com/xulihang/barcode-detector-polyfill/#readme",
   "license": "MIT",
   "author": {
@@ -40,6 +40,10 @@
   },
   "keywords": [
     "barcode",
+    "barcode-detector",
+    "ean",
+    "datamatrix",
+    "pdf417",
     "qrcode"
   ]
 }
