@@ -33,15 +33,16 @@ let barcodeDetector;
 async function init() {
   if ("BarcodeDetector" in window) {
     alert('Barcode Detector supported!');
-    barcodeDetector = new window.BarcodeDetector({ formats: ["qr_code"] });
   }else{
     alert('Barcode Detector is not supported by this browser, using the Dynamsoft Barcode Reader polyfill.');
-    barcodeDetector = new BarcodeDetectorPolyfill({ formats: ["qr_code"] });
     
     //initialize the Dynamsoft Barcode Reader with a license
     BarcodeDetectorPolyfill.setLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
-    await barcodeDetector.init();
+    await BarcodeDetectorPolyfill.init();
+    window.BarcodeDetector = BarcodeDetectorPolyfill;
+    
   }
+  barcodeDetector = new window.BarcodeDetector({ formats: ["qr_code"] });
 }
 
 async function decode(imgEl) {
