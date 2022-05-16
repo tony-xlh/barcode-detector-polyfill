@@ -37,8 +37,9 @@ const mapFormatInv = new Map<EnumBarcodeFormat, BarcodeFormat>(
 
 const allSupportedFormats : BarcodeFormat[] = Array.from(mapFormat.keys())
 
+let reader: BarcodeReader;
+
 export default class BarcodeDetector {
-  private reader: BarcodeReader;
   private formats: BarcodeFormat[];
   constructor (barcodeDetectorOptions? : BarcodeDetectorOptions) {
     // SPEC: A series of BarcodeFormats to search for in the subsequent detect() calls. If not present then the UA SHOULD 
@@ -55,6 +56,25 @@ export default class BarcodeDetector {
     if (this.formats.includes("unknown")) {
       throw new TypeError("") // TODO pick message
     }
+
+    this.updateRuntimeSettings();
+  }
+
+  async updateRuntimeSettings(){
+    if (this.formats.length != allSupportedFormats.length) {
+      console.log("update runtime settings for formats");
+      let settings = await reader.getRuntimeSettings();
+      let ids:number;
+      for (let index = 0; index < this.formats.length; index++) {
+        if (index === 0) {
+          ids = mapFormat.get(this.formats[index]);
+        }else{
+          ids = ids || mapFormat.get(this.formats[index]);
+        }
+      }
+      settings.barcodeFormatIds = ids;
+      await reader.updateRuntimeSettings(settings);
+    }
   }
 
   static setLicense(license:string) {
@@ -65,24 +85,9 @@ export default class BarcodeDetector {
     return BarcodeReader.license;
   }
 
-  async init() : Promise<BarcodeReader> {
-    this.reader = await BarcodeScanner.createInstance();
-    if (this.formats.length != allSupportedFormats.length) {
-      console.log("update runtime settings for formats");
-      let settings = await this.reader.getRuntimeSettings();
-      let ids:number;
-      for (let index = 0; index < this.formats.length; index++) {
-        if (index === 0) {
-          ids = mapFormat.get(this.formats[index]);
-        }else{
-          ids = ids || mapFormat.get(this.formats[index]);
-        }
-      }
-      settings.barcodeFormatIds = ids;
-      await this.reader.updateRuntimeSettings(settings);
-    }
-    
-    return this.reader;
+  static async init() : Promise<BarcodeReader> {
+    reader = await BarcodeScanner.createInstance();
+    return reader;
   }
 
   static async getSupportedFormats() : Promise<BarcodeFormat[]> {
@@ -90,10 +95,10 @@ export default class BarcodeDetector {
   }
 
   async detect(image : ImageBitmapSource) : Promise<DetectedBarcode[]> {
-    if (!this.reader) {
+    if (!reader) {
       throw new Error("Dynamsoft Barcode Reader has not been initialized.");
     }
-    let results:TextResult[] = await this.reader.decode(image as any);
+    let results:TextResult[] = await reader.decode(image as any);
     let detectedBarcodes:DetectedBarcode[] = [];
     results.forEach(result => {
       let detectedBarcode:DetectedBarcode = this.wrapResult(result);
