@@ -86,7 +86,7 @@ export default class BarcodeDetector {
   }
 
   static async init() : Promise<BarcodeReader> {
-    reader = await BarcodeScanner.createInstance();
+    reader = await BarcodeReader.createInstance();
     return reader;
   }
 
