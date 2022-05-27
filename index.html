@@ -6,8 +6,9 @@
 
   <title>BarcodeDetector Polyfill</title>
   <script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.0.2/dist/dbr.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/barcode-detection@0.3.0/dist/barcode-detector.umd.js"></script>
-  <!--<script src="dist/barcode-detector.umd.js"></script>-->
+  <!--<script type="text/javascript" src="https://unpkg.com/@zxing/browser@latest"></script>-->
+  <!--<script src="https://cdn.jsdelivr.net/npm/barcode-detection@0.3.0/dist/barcode-detector.umd.js"></script>-->
+  <script src="dist/barcode-detector.umd.js"></script>
   
 </head>
 <body>
@@ -54,12 +55,12 @@ async function init() {
     alert('Barcode Detector supported!');
     barcodeDetector = new window.BarcodeDetector({ formats: ["qr_code"] });
   }else{
-    alert('Barcode Detector is not supported by this browser, using the Dynamsoft Barcode Reader polyfill.');
+    alert('Barcode Detector is not supported by this browser, using the polyfill');
     barcodeDetector = new BarcodeDetectorPolyfill({ formats: ["qr_code"] });
     
     //initialize the Dynamsoft Barcode Reader with a license
-    BarcodeDetectorPolyfill.setLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
-    await barcodeDetector.init();
+    BarcodeDetectorPolyfill.setDBRLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
+    await barcodeDetector.initDBR();
   }
   initialized = true;
 }
