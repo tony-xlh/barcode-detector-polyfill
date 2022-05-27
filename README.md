@@ -1,6 +1,6 @@
 # barcode-detector-polyfill
 
-Polyfill for the Barcode Detection API based on [Dynamsoft Barcode Reader](https://www.dynamsoft.com/barcode-reader/overview/).
+Polyfill for the Barcode Detection API based on [Dynamsoft Barcode Reader](https://www.dynamsoft.com/barcode-reader/overview/) or [ZXing](https://github.com/zxing-js/library).
 
 [Online demo](https://extraordinary-taiyaki-4769a5.netlify.app/)
 
@@ -12,6 +12,8 @@ Polyfill for the Barcode Detection API based on [Dynamsoft Barcode Reader](https
     <script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.0.2/dist/dbr.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/barcode-detection@latest/dist/barcode-detector.umd.js"></script>
     ```
+    
+    PS: ZXing is not supported via CDN.
 
 2. Via npm:
 
@@ -35,10 +37,10 @@ async function init() {
     alert('Barcode Detector supported!');
   }else{
     alert('Barcode Detector is not supported by this browser, using the Dynamsoft Barcode Reader polyfill.');
-    
+    BarcodeDetectorPolyfill.engine = "DBR"; // options: DBR and ZXing.
     //initialize the Dynamsoft Barcode Reader with a license
-    BarcodeDetectorPolyfill.setLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
-    await BarcodeDetectorPolyfill.init();
+    BarcodeDetectorPolyfill.setDBRLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
+    await BarcodeDetectorPolyfill.initDBR();
     window.BarcodeDetector = BarcodeDetectorPolyfill;
     
   }
@@ -51,9 +53,11 @@ async function decode(imgEl) {
 }
 ```
 
-You can apply for a license [here](https://www.dynamsoft.com/customer/license/trialLicense?product=dbr).
+You can apply for a license of Dynamsoft Barcode Reader [here](https://www.dynamsoft.com/customer/license/trialLicense?product=dbr).
 
 ## Supported Barcode Symbologies
+
+Dynamsoft Barcode Reader:
 
 * Code 11
 * Code 39
@@ -80,3 +84,16 @@ You can apply for a license [here](https://www.dynamsoft.com/customer/license/tr
 * Dot Code
 * Pharmacode
 
+ZXing:
+
+* Aztec
+* Code 39
+* Code 128
+* EAN-8
+* EAN-13
+* UPC-A
+* UPC-E
+* QRCode
+* DataMatrix
+* PDF417
+* Interleaved 2 of 5 (ITF)
