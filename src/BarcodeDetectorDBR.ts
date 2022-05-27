@@ -1,4 +1,4 @@
-import { BarcodeReader, BarcodeScanner, EnumBarcodeFormat, EnumBarcodeFormat_2, TextResult } from "dynamsoft-javascript-barcode";
+import { BarcodeReader, EnumBarcodeFormat, TextResult } from "dynamsoft-javascript-barcode";
 import { BarcodeDetectorOptions, BarcodeFormat, DetectedBarcode, Point2D } from "./Definitions";
 
 BarcodeReader.engineResourcePath = "https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.0.2/dist/";
@@ -75,6 +75,10 @@ export default class BarcodeDetector {
       settings.barcodeFormatIds = ids;
       await reader.updateRuntimeSettings(settings);
     }
+  }
+
+  static setEngineResourcePath(path:string) {
+    BarcodeReader.engineResourcePath = path;
   }
 
   static setLicense(license:string) {
