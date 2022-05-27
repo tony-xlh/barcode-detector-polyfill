@@ -1,7 +1,7 @@
 import { BarcodeReader, EnumBarcodeFormat, TextResult } from "dynamsoft-javascript-barcode";
 import { BarcodeDetectorOptions, BarcodeFormat, DetectedBarcode, Point2D } from "./Definitions";
 
-BarcodeReader.engineResourcePath = "https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.0.2/dist/";
+BarcodeReader.engineResourcePath = "https://unpkg.com/dynamsoft-javascript-barcode@9.0.2/dist/";
 
 const mapFormat = new Map<BarcodeFormat, EnumBarcodeFormat>([
   [ "aztec", EnumBarcodeFormat.BF_AZTEC ],
@@ -39,7 +39,7 @@ const allSupportedFormats : BarcodeFormat[] = Array.from(mapFormat.keys())
 
 let reader: BarcodeReader;
 
-export default class BarcodeDetector {
+export default class BarcodeDetectorDBR {
   private formats: BarcodeFormat[];
   constructor (barcodeDetectorOptions? : BarcodeDetectorOptions) {
     // SPEC: A series of BarcodeFormats to search for in the subsequent detect() calls. If not present then the UA SHOULD 
@@ -85,7 +85,7 @@ export default class BarcodeDetector {
     BarcodeReader.license = license;
   }
   
-  static getLicense(license:string) : string {
+  static getLicense() : string {
     return BarcodeReader.license;
   }
 

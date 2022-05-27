@@ -42,12 +42,21 @@ closeButton.onclick = function() {
   scannerContainer.style.display = "none";
   home.style.display = "";
 };
+
+var okayButton = document.querySelector("#okayButton");
+okayButton.onclick = function() {
+  console.log("okay clicked");
+  var modal = document.getElementById("modal");
+  modal.className = modal.className.replace("active", "");
+  enablePolyfillAndInit();
+};
+
 document.getElementsByClassName("camera")[0].addEventListener('loadeddata',onPlayed, false);
 document.getElementById("cameraSelect").onchange = onCameraChanged;
-initBarcodeDetector();
+checkBarcodeDetector();
 
 
-async function initBarcodeDetector(){
+async function checkBarcodeDetector(){
   var barcodeDetectorUsable = false;
   if ('BarcodeDetector' in window) {
     let formats = await window.BarcodeDetector.getSupportedFormats();
@@ -58,15 +67,30 @@ async function initBarcodeDetector(){
 
   if (barcodeDetectorUsable === true) {
     alert('Barcode Detector supported!');
+    initBarcodeDetector();
   }else{
-    alert('Barcode Detector is not supported by this browser, using the Dynamsoft Barcode Reader polyfill.');
-    BarcodeDetectorPolyfill.setLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
-    let reader = await BarcodeDetectorPolyfill.init();
+    document.getElementById("modal").className += " active";
+  }
+}
+
+async function enablePolyfillAndInit(){
+  var selectedEngine = document.getElementById("engineSelect").selectedOptions[0].value;
+    
+  console.log(selectedEngine);
+  if (selectedEngine === "Dynamsoft Barcode Reader") {
+    BarcodeDetectorPolyfill.engine = "DBR";
+    BarcodeDetectorPolyfill.setDBRLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
+    let reader = await BarcodeDetectorPolyfill.initDBR();
     console.log("reader");
     console.log(reader); // You can modify the runtime settings of the reader instance.
-    window.BarcodeDetector = BarcodeDetectorPolyfill;
+  }else{
+    BarcodeDetectorPolyfill.engine = "ZXing";
   }
-  
+  initBarcodeDetector();
+}
+
+function initBarcodeDetector(){
+  window.BarcodeDetector = BarcodeDetectorPolyfill;
   barcodeDetector = new window.BarcodeDetector();
 
   fileInput.disabled = "";
@@ -214,7 +238,7 @@ function drawOverlay(barcodes){
     text.setAttribute("x",lr.x1);
     text.setAttribute("y",lr.y1);
     text.setAttribute("fill","red");
-    text.setAttribute("fontSize","20");
+    text.setAttribute("font-size","25");
     svg.append(polygon);
     svg.append(text);
   }

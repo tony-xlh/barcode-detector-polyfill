@@ -6,8 +6,8 @@
   <title>webpack starterkit</title>
   <meta name="description" content="A light foundation for your next frontend project based on webpack.">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
-  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-  <script>eruda.init();</script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+  <script>eruda.init();</script>-->
 </head>
 <body>
   <div class="home">
@@ -21,6 +21,14 @@
     <button id="closeButton">Close</button>
     <svg class="overlay fullscreen"></svg>
     <video class="camera fullscreen" muted autoplay="autoplay" playsinline="playsinline" webkit-playsinline></video>
+  </div>
+  <div id="modal" class="modal-window">
+    <p>Barcode Detector is not supported by this browser, please select a barcode reader to use.</p>
+    <select id="engineSelect">
+      <option>Dynamsoft Barcode Reader</option>
+      <option>ZXing</option>
+    </select>
+    <button id="okayButton">Okay</button>
   </div>
 </body>
 </html>

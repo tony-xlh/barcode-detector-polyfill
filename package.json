@@ -35,9 +35,6 @@
   "devDependencies": {
     "microbundle": "^0.15.0"
   },
-  "dependencies": {
-    "dynamsoft-javascript-barcode": "^9.0.2"
-  },
   "keywords": [
     "barcode",
     "barcode-detector",
@@ -45,5 +42,9 @@
     "datamatrix",
     "pdf417",
     "qrcode"
-  ]
+  ],
+  "dependencies": {
+    "dynamsoft-javascript-barcode": "^9.0.2",
+    "@zxing/library": "^0.19.1"
+  }
 }
