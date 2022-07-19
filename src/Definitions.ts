@@ -33,13 +33,13 @@ export interface BarcodeDetectorOptions {
 };
 
 export interface Point2D {
-  x : Number, 
-  y : Number
+  x : number, 
+  y : number
 };
 
 export interface DetectedBarcode {
   boundingBox : DOMRectReadOnly,
   rawValue : String,
   format : BarcodeFormat,
-  cornerPoints : ReadonlyArray<Point2D>
+  cornerPoints: readonly [Point2D, Point2D, Point2D, Point2D]
 };
