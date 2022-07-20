@@ -68,8 +68,6 @@ export default class BarcodeDetectorZXing {
   }
 
   wrapResult(result:ZXing.Result):DetectedBarcode{
-    const cornerPoints = [];
-
     let minX: number, minY: number, maxX: number, maxY: number;
     
     //set initial values
@@ -95,10 +93,7 @@ export default class BarcodeDetectorZXing {
     let p2:Point2D = {x:boundingBox.right,y:boundingBox.top};
     let p3:Point2D = {x:boundingBox.right,y:boundingBox.bottom};
     let p4:Point2D = {x:boundingBox.left,y:boundingBox.bottom};
-    cornerPoints.push(p1);
-    cornerPoints.push(p2);
-    cornerPoints.push(p3);
-    cornerPoints.push(p4);
+    const cornerPoints = [p1, p2, p3, p4] as const;
 
     return { 
       boundingBox: boundingBox, 
