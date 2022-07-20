@@ -93,13 +93,19 @@ export default class BarcodeDetectorZXing {
     let p2:Point2D = {x:boundingBox.right,y:boundingBox.top};
     let p3:Point2D = {x:boundingBox.right,y:boundingBox.bottom};
     let p4:Point2D = {x:boundingBox.left,y:boundingBox.bottom};
-    const cornerPoints = [p1, p2, p3, p4] as const;
+
+    const cornerPoints = [p1, p2, p3, p4];
+
+    let barcodeFormat = mapFormatInv.get(result.getBarcodeFormat());
+    if (!barcodeFormat) {
+      barcodeFormat = "unknown";
+    }
 
     return { 
       boundingBox: boundingBox, 
       rawValue: result.getText(),
-      format: mapFormatInv.get(result.getBarcodeFormat()),
-      cornerPoints
+      format: barcodeFormat,
+      cornerPoints: cornerPoints
     };
   }
 }

@@ -64,16 +64,22 @@ export default class BarcodeDetectorDBR {
     if (this.formats.length != allSupportedFormats.length) {
       console.log("update runtime settings for formats");
       let settings = await reader.getRuntimeSettings();
-      let ids:number;
+      let ids:number|undefined = undefined;
       for (let index = 0; index < this.formats.length; index++) {
-        if (index === 0) {
-          ids = mapFormat.get(this.formats[index]);
-        }else{
-          ids = ids || mapFormat.get(this.formats[index]);
+        const format = mapFormat.get(this.formats[index]);
+        if (format) {
+          if (index === 0) {
+            ids = format;
+          }else{
+            ids = ids || format;
+          }
         }
+        
       }
-      settings.barcodeFormatIds = ids;
-      await reader.updateRuntimeSettings(settings);
+      if (ids) {
+        settings.barcodeFormatIds = ids;
+        await reader.updateRuntimeSettings(settings);
+      }
     }
   }
 
@@ -112,7 +118,7 @@ export default class BarcodeDetectorDBR {
   }
 
   wrapResult(result:TextResult):DetectedBarcode{
-    const cornerPoints = [];
+    const cornerPoints:Point2D[] = [];
 
     let minX: number, minY: number, maxX: number, maxY: number;
 
@@ -135,12 +141,16 @@ export default class BarcodeDetectorDBR {
     }
 
     let boundingBox = new DOMRectReadOnly(minX, minY, maxX - minX, maxY - minY);
+    let barcodeFormat = mapFormatInv.get(result.barcodeFormat);
+    if (!barcodeFormat) {
+      barcodeFormat = "unknown";
+    }
 
     return { 
       boundingBox: boundingBox, 
       rawValue: result.barcodeText,
-      format: mapFormatInv.get(result.barcodeFormat),
-      cornerPoints
+      format: barcodeFormat,
+      cornerPoints:cornerPoints
     };
   }
 }
