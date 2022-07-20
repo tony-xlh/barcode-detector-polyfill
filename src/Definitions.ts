@@ -41,5 +41,5 @@ export interface DetectedBarcode {
   boundingBox : DOMRectReadOnly,
   rawValue : String,
   format : BarcodeFormat,
-  cornerPoints: readonly [Point2D, Point2D, Point2D, Point2D]
+  cornerPoints: ReadonlyArray<Point2D>
 };
