@@ -32,6 +32,9 @@
     "build": "microbundle build --globals dynamsoft-javascript-barcode=Dynamsoft.DBR,@zxing/library=ZXingBrowser",
     "dev": "microbundle watch"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "devDependencies": {
     "microbundle": "^0.15.0"
   },
