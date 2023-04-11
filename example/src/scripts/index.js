@@ -1,29 +1,36 @@
 import '../styles/index.css';
 import {default as BarcodeDetectorPolyfill} from "barcode-detection";
 
-var barcodeDetector;
-var decoding = false;
-var localStream;
-var interval;
-var scannerContainer = document.querySelector(".scanner");
-var home = document.querySelector(".home");
-var startButton = document.querySelector("#startButton");
+const region = {
+  left: 15,
+  top: 25,
+  right: 85,
+  bottom: 60
+};
+updateViewerFinder(1280,720);
+let barcodeDetector;
+let decoding = false;
+let localStream;
+let interval;
+let scannerContainer = document.querySelector(".scanner");
+let home = document.querySelector(".home");
+let startButton = document.querySelector("#startButton");
 startButton.onclick = function() {
   scannerContainer.style.display = "";
   home.style.display = "none";
   loadDevicesAndPlay();
 };
-var fileInput = document.querySelector("#fileInput");
+let fileInput = document.querySelector("#fileInput");
 fileInput.onchange = function(event) {
-  var file = event.target.files[0];
-  var reader = new FileReader();
+  let file = event.target.files[0];
+  let reader = new FileReader();
 				
   reader.onload = function(e){
-    var img = document.getElementById("selectedImg");
+    let img = document.getElementById("selectedImg");
     img.src = e.target.result;
     img.onload = async function() {
-      var detectedCodes = await barcodeDetector.detect(img);
-      var json = JSON.stringify(detectedCodes, null, 2);
+      let detectedCodes = await barcodeDetector.detect(img);
+      let json = JSON.stringify(detectedCodes, null, 2);
       console.log(json);
       alert(json);
     };
@@ -36,17 +43,17 @@ fileInput.onchange = function(event) {
 	reader.readAsDataURL(file);	
 };
 
-var closeButton = document.querySelector("#closeButton");
+let closeButton = document.querySelector("#closeButton");
 closeButton.onclick = function() {
   stop();
   scannerContainer.style.display = "none";
   home.style.display = "";
 };
 
-var okayButton = document.querySelector("#okayButton");
+let okayButton = document.querySelector("#okayButton");
 okayButton.onclick = function() {
   console.log("okay clicked");
-  var modal = document.getElementById("modal");
+  let modal = document.getElementById("modal");
   modal.className = modal.className.replace("active", "");
   enablePolyfillAndInit();
 };
@@ -57,7 +64,7 @@ checkBarcodeDetector();
 
 
 async function checkBarcodeDetector(){
-  var barcodeDetectorUsable = false;
+  let barcodeDetectorUsable = false;
   if ('BarcodeDetector' in window) {
     let formats = await window.BarcodeDetector.getSupportedFormats();
     if (formats.length > 0) {
@@ -74,7 +81,7 @@ async function checkBarcodeDetector(){
 }
 
 async function enablePolyfillAndInit(){
-  var selectedEngine = document.getElementById("engineSelect").selectedOptions[0].value;
+  let selectedEngine = document.getElementById("engineSelect").selectedOptions[0].value;
     
   console.log(selectedEngine);
   if (selectedEngine === "Dynamsoft Barcode Reader") {
@@ -92,27 +99,26 @@ async function enablePolyfillAndInit(){
 function initBarcodeDetector(){
   window.BarcodeDetector = BarcodeDetectorPolyfill;
   barcodeDetector = new window.BarcodeDetector();
-
   fileInput.disabled = "";
   startButton.disabled = "";
   document.getElementById("status").innerHTML = "";
 }
 
 function loadDevicesAndPlay(){
-  var constraints = {video: true, audio: false};
+  let constraints = {video: true, audio: false};
   navigator.mediaDevices.getUserMedia(constraints).then(stream => {
       localStream = stream;
-      var cameraselect = document.getElementById("cameraSelect");
+      let cameraselect = document.getElementById("cameraSelect");
       cameraselect.innerHTML="";
       navigator.mediaDevices.enumerateDevices().then(function(devices) {
-          var count = 0;
-          var cameraDevices = [];
-          var defaultIndex = 0;
-          for (var i=0;i<devices.length;i++){
-              var device = devices[i];
+          let count = 0;
+          let cameraDevices = [];
+          let defaultIndex = 0;
+          for (let i=0;i<devices.length;i++){
+              let device = devices[i];
               if (device.kind == 'videoinput'){
                   cameraDevices.push(device);
-                  var label = device.label || `Camera ${count++}`;
+                  let label = device.label || `Camera ${count++}`;
                   cameraselect.add(new Option(label,device.deviceId));
                   if (label.toLowerCase().indexOf("back") != -1) {
                     defaultIndex = cameraDevices.length - 1;
@@ -134,7 +140,7 @@ function loadDevicesAndPlay(){
 
 function play(deviceId) {
   stop();
-  var constraints = {};
+  let constraints = {};
 
   if (deviceId){
       constraints = {
@@ -150,7 +156,7 @@ function play(deviceId) {
 
   navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
       localStream = stream;
-      var camera = document.getElementsByClassName("camera")[0];
+      let camera = document.getElementsByClassName("camera")[0];
       // Attach local stream to video element
       camera.srcObject = stream;
 
@@ -172,19 +178,31 @@ function stop(){
 }
 
 function onCameraChanged(){
-  var cameraselect = document.getElementById("cameraSelect");
-  var deviceId = cameraselect.selectedOptions[0].value;
+  let cameraselect = document.getElementById("cameraSelect");
+  let deviceId = cameraselect.selectedOptions[0].value;
   play(deviceId);
 }
 
 function onPlayed() {
   updateSVGViewBoxBasedOnVideoSize();
+  let camera = document.getElementsByClassName("camera")[0];
+  updateViewerFinder(camera.videoWidth,camera.videoHeight);
   startDecoding();
 }
 
+function updateViewerFinder(width,height){
+  let viewFinder = document.querySelector("view-finder");
+  viewFinder.width = width;
+  viewFinder.height = height;
+  viewFinder.left = viewFinder.width * region.left / 100;
+  viewFinder.right = viewFinder.width * region.right / 100;
+  viewFinder.top = viewFinder.height * region.top / 100;
+  viewFinder.bottom = viewFinder.height * region.bottom / 100;
+}
+
 function updateSVGViewBoxBasedOnVideoSize(){
-  var camera = document.getElementsByClassName("camera")[0];
-  var svg = document.getElementsByTagName("svg")[0];
+  let camera = document.getElementsByClassName("camera")[0];
+  let svg = document.getElementsByTagName("svg")[0];
   svg.setAttribute("viewBox","0 0 "+camera.videoWidth+" "+camera.videoHeight);
 }
 
@@ -201,10 +219,10 @@ function stopDecoding(){
 async function decode(){
   if (decoding === false) {
     console.log("decoding");
-    var video = document.getElementsByClassName("camera")[0];
+    let video = document.getElementsByClassName("camera")[0];
     decoding = true;
     try {
-      var barcodes = await barcodeDetector.detect(video);  
+      let barcodes = await barcodeDetector.detect(video);  
       console.log(barcodes);
       drawOverlay(barcodes);
     } catch (error) {
@@ -215,12 +233,12 @@ async function decode(){
 }
 
 function drawOverlay(barcodes){
-  var svg = document.getElementsByTagName("svg")[0];
+  let svg = document.getElementsByTagName("svg")[0];
   svg.innerHTML = "";
-  for (var i=0;i<barcodes.length;i++) {
-    var barcode = barcodes[i];
+  for (let i=0;i<barcodes.length;i++) {
+    let barcode = barcodes[i];
     console.log(barcode);
-    var lr = {};
+    let lr = {};
     lr.x1 = barcode.cornerPoints[0].x;
     lr.x2 = barcode.cornerPoints[1].x;
     lr.x3 = barcode.cornerPoints[2].x;
@@ -229,11 +247,11 @@ function drawOverlay(barcodes){
     lr.y2 = barcode.cornerPoints[1].y;
     lr.y3 = barcode.cornerPoints[2].y;
     lr.y4 = barcode.cornerPoints[3].y;
-    var points = getPointsData(lr);
-    var polygon = document.createElementNS("http://www.w3.org/2000/svg","polygon");
+    let points = getPointsData(lr);
+    let polygon = document.createElementNS("http://www.w3.org/2000/svg","polygon");
     polygon.setAttribute("points",points);
     polygon.setAttribute("class","barcode-polygon");
-    var text = document.createElementNS("http://www.w3.org/2000/svg","text");
+    let text = document.createElementNS("http://www.w3.org/2000/svg","text");
     text.innerHTML = barcode.rawValue;
     text.setAttribute("x",lr.x1);
     text.setAttribute("y",lr.y1);
@@ -245,7 +263,7 @@ function drawOverlay(barcodes){
 }
 
 function getPointsData(lr){
-  var pointsData = lr.x1+","+lr.y1 + " ";
+  let pointsData = lr.x1+","+lr.y1 + " ";
   pointsData = pointsData+ lr.x2+","+lr.y2 + " ";
   pointsData = pointsData+ lr.x3+","+lr.y3 + " ";
   pointsData = pointsData+ lr.x4+","+lr.y4;
