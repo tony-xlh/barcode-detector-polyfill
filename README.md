@@ -9,7 +9,7 @@ Polyfill for the Barcode Detection API based on [Dynamsoft Barcode Reader](https
 1. Via CDN:
 
     ```html
-    <script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.0.2/dist/dbr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.6.11/dist/dbr.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/barcode-detection@latest/dist/barcode-detector.umd.js"></script>
     ```
     
