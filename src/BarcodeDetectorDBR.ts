@@ -1,7 +1,7 @@
 import { BarcodeReader, EnumBarcodeFormat, TextResult } from "dynamsoft-javascript-barcode";
 import { BarcodeDetectorOptions, BarcodeFormat, DetectedBarcode, Point2D } from "./Definitions";
 
-BarcodeReader.engineResourcePath = "https://unpkg.com/dynamsoft-javascript-barcode@9.0.2/dist/";
+BarcodeReader.engineResourcePath = "https://unpkg.com/dynamsoft-javascript-barcode@9.6.11/dist/";
 
 const mapFormat = new Map<BarcodeFormat, EnumBarcodeFormat>([
   [ "aztec", EnumBarcodeFormat.BF_AZTEC ],
