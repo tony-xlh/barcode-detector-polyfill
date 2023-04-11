@@ -219,10 +219,12 @@ function stopDecoding(){
 async function decode(){
   if (decoding === false) {
     console.log("decoding");
-    let video = document.getElementsByClassName("camera")[0];
     decoding = true;
     try {
-      let barcodes = await barcodeDetector.detect(video);  
+      let video = document.getElementsByClassName("camera")[0];
+      let canvas = document.getElementsByClassName("hiddenCVS")[0];
+      captureFrame(video,canvas);
+      let barcodes = await barcodeDetector.detect(canvas);  
       console.log(barcodes);
       drawOverlay(barcodes);
     } catch (error) {
@@ -232,21 +234,31 @@ async function decode(){
   }
 }
 
+function captureFrame(video,canvas){
+  let viewFinder = document.querySelector("view-finder");
+  canvas.width  = viewFinder.width;
+  canvas.height = viewFinder.height;
+  let ctx = canvas.getContext('2d');
+  ctx.drawImage(video, viewFinder.left, viewFinder.top, viewFinder.width, viewFinder.height);
+}
+
 function drawOverlay(barcodes){
   let svg = document.getElementsByTagName("svg")[0];
+  let viewFinder = document.querySelector("view-finder");
   svg.innerHTML = "";
+  let offsetX = - viewFinder.left;
+  let offsetY = - viewFinder.top;
   for (let i=0;i<barcodes.length;i++) {
     let barcode = barcodes[i];
-    console.log(barcode);
     let lr = {};
-    lr.x1 = barcode.cornerPoints[0].x;
-    lr.x2 = barcode.cornerPoints[1].x;
-    lr.x3 = barcode.cornerPoints[2].x;
-    lr.x4 = barcode.cornerPoints[3].x;
-    lr.y1 = barcode.cornerPoints[0].y;
-    lr.y2 = barcode.cornerPoints[1].y;
-    lr.y3 = barcode.cornerPoints[2].y;
-    lr.y4 = barcode.cornerPoints[3].y;
+    lr.x1 = barcode.cornerPoints[0].x + offsetX;
+    lr.x2 = barcode.cornerPoints[1].x + offsetX;
+    lr.x3 = barcode.cornerPoints[2].x + offsetX;
+    lr.x4 = barcode.cornerPoints[3].x + offsetX;
+    lr.y1 = barcode.cornerPoints[0].y + offsetY;
+    lr.y2 = barcode.cornerPoints[1].y + offsetY;
+    lr.y3 = barcode.cornerPoints[2].y + offsetY;
+    lr.y4 = barcode.cornerPoints[3].y + offsetY;
     let points = getPointsData(lr);
     let polygon = document.createElementNS("http://www.w3.org/2000/svg","polygon");
     polygon.setAttribute("points",points);
