@@ -192,12 +192,23 @@ function onPlayed() {
 
 function updateViewerFinder(width,height){
   let viewFinder = document.querySelector("view-finder");
-  viewFinder.width = width;
-  viewFinder.height = height;
-  viewFinder.left = viewFinder.width * region.left / 100;
-  viewFinder.right = viewFinder.width * region.right / 100;
-  viewFinder.top = viewFinder.height * region.top / 100;
-  viewFinder.bottom = viewFinder.height * region.bottom / 100;
+  if (BarcodeDetectorPolyfill.engine === "ZXing") { //do not use view finder for zxing
+    viewFinder.width = width;
+    viewFinder.height = height;
+    viewFinder.left = 0;
+    viewFinder.right = width;
+    viewFinder.top = 0;
+    viewFinder.bottom = height;
+    viewFinder.style.display = "none";
+  }else{
+    viewFinder.width = width;
+    viewFinder.height = height;
+    viewFinder.left = viewFinder.width * region.left / 100;
+    viewFinder.right = viewFinder.width * region.right / 100;
+    viewFinder.top = viewFinder.height * region.top / 100;
+    viewFinder.bottom = viewFinder.height * region.bottom / 100;
+    viewFinder.style.display = "";
+  }
 }
 
 function updateSVGViewBoxBasedOnVideoSize(){
@@ -222,9 +233,14 @@ async function decode(){
     decoding = true;
     try {
       let video = document.getElementsByClassName("camera")[0];
-      let canvas = document.getElementsByClassName("hiddenCVS")[0];
-      let img = await captureFrame(video,canvas);
-      let barcodes = await barcodeDetector.detect(img);  
+      let barcodes;
+      if (BarcodeDetectorPolyfill.engine === "ZXing") {
+        barcodes = await barcodeDetector.detect(video);
+      } else {
+        let canvas = document.getElementsByClassName("hiddenCVS")[0];
+        let img = await captureFrame(video,canvas);
+        barcodes = await barcodeDetector.detect(img);
+      }
       console.log(barcodes);
       drawOverlay(barcodes);
     } catch (error) {
