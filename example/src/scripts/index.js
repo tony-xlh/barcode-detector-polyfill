@@ -209,10 +209,10 @@ function updateSVGViewBoxBasedOnVideoSize(){
 function startDecoding(){
   stopDecoding();
   //1000/25=40
-  interval = setInterval(decode, 40);
+  interval = setInterval(decode, 200);
 }
 
-function stopDecoding(){
+function stopDecoding() {
   clearInterval(interval);
 }
 
@@ -223,8 +223,8 @@ async function decode(){
     try {
       let video = document.getElementsByClassName("camera")[0];
       let canvas = document.getElementsByClassName("hiddenCVS")[0];
-      captureFrame(video,canvas);
-      let barcodes = await barcodeDetector.detect(canvas);  
+      let img = await captureFrame(video,canvas);
+      let barcodes = await barcodeDetector.detect(img);  
       console.log(barcodes);
       drawOverlay(barcodes);
     } catch (error) {
@@ -235,19 +235,30 @@ async function decode(){
 }
 
 function captureFrame(video,canvas){
-  let viewFinder = document.querySelector("view-finder");
-  canvas.width  = viewFinder.width;
-  canvas.height = viewFinder.height;
-  let ctx = canvas.getContext('2d');
-  ctx.drawImage(video, viewFinder.left, viewFinder.top, viewFinder.width, viewFinder.height);
+  return new Promise(function (resolve) {
+    let viewFinder = document.querySelector("view-finder");
+    const left = viewFinder.left;
+    const top = viewFinder.top;
+    const width = viewFinder.right - viewFinder.left;
+    const height = viewFinder.bottom - viewFinder.top;
+    canvas.width  = width;
+    canvas.height = height;
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(video, left, top, width, height, 0, 0, width, height);
+    let img = document.getElementById("selectedImg");
+    img.src = canvas.toDataURL();
+    img.onload = function(){
+      resolve(img);
+    };
+  });
 }
 
 function drawOverlay(barcodes){
   let svg = document.getElementsByTagName("svg")[0];
   let viewFinder = document.querySelector("view-finder");
   svg.innerHTML = "";
-  let offsetX = - viewFinder.left;
-  let offsetY = - viewFinder.top;
+  let offsetX = viewFinder.left;
+  let offsetY = viewFinder.top;
   for (let i=0;i<barcodes.length;i++) {
     let barcode = barcodes[i];
     let lr = {};
