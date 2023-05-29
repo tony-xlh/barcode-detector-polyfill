@@ -62,7 +62,7 @@ export default class BarcodeDetectorDBR {
 
   async updateRuntimeSettings(){
     if (this.formats.length != allSupportedFormats.length) {
-      console.log("update runtime settings for formats");
+      console.log("update runtime settings for formats...");
       let settings = await reader.getRuntimeSettings();
       let ids:number|undefined = undefined;
       for (let index = 0; index < this.formats.length; index++) {
@@ -71,10 +71,9 @@ export default class BarcodeDetectorDBR {
           if (index === 0) {
             ids = format;
           }else{
-            ids = ids || format;
+            ids = ids! | format;
           }
         }
-        
       }
       if (ids) {
         settings.barcodeFormatIds = ids;
