@@ -47,7 +47,7 @@
     "qrcode"
   ],
   "dependencies": {
-    "@zxing/library": "^0.20.0",
-    "dynamsoft-javascript-barcode": "^9.6.20"
+    "@zxing/library": "0.20.0",
+    "dynamsoft-javascript-barcode": "9.6.20"
   }
 }
