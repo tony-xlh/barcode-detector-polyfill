@@ -1,4 +1,4 @@
-import { BinaryBitmap, HTMLCanvasElementLuminanceSource, HTMLVisualMediaElement, HybridBinarizer, MultiFormatReader } from "@zxing/library";
+import { BinaryBitmap, BrowserMultiFormatReader, HTMLCanvasElementLuminanceSource, HTMLVisualMediaElement, HybridBinarizer, MultiFormatReader } from "@zxing/library";
 import { BarcodeDetectorOptions, BarcodeFormat, DetectedBarcode, Point2D } from "./Definitions";
 import * as ZXing from "@zxing/library";
 
@@ -23,12 +23,11 @@ const mapFormatInv = new Map<ZXing.BarcodeFormat, BarcodeFormat>(
 const allSupportedFormats : BarcodeFormat[] = Array.from(mapFormat.keys())
 
 export default class BarcodeDetectorZXing {
-  private reader: MultiFormatReader;
+  private reader: MultiFormatReader|BrowserMultiFormatReader;
   private canvas: HTMLCanvasElement;
   constructor (barcodeDetectorOptions? : BarcodeDetectorOptions) {
     // SPEC: A series of BarcodeFormats to search for in the subsequent detect() calls. If not present then the UA SHOULD 
     // search for all supported formats.
-
     const formats = barcodeDetectorOptions?.formats ?? allSupportedFormats;
 
     // SPEC: If barcodeDetectorOptions.formats is present and empty, then throw a new TypeError.
@@ -40,13 +39,16 @@ export default class BarcodeDetectorZXing {
     if (formats.includes("unknown")) {
       throw new TypeError(""); // TODO pick message
     }
-
-    const hints = new Map([
-      [ ZXing.DecodeHintType.POSSIBLE_FORMATS, formats.map(format => mapFormat.get(format)) ]
-    ]);
-    
-    this.reader = new MultiFormatReader();
-    this.reader.setHints(hints);
+    if ("ZXingBrowser" in window) {
+      let ZXingBrowser:any = window["ZXingBrowser"];
+      this.reader = new ZXingBrowser.BrowserMultiFormatReader();
+    }else{
+      const hints = new Map([
+        [ ZXing.DecodeHintType.POSSIBLE_FORMATS, formats.map(format => mapFormat.get(format)) ]
+      ]);
+      this.reader = new MultiFormatReader();
+      this.reader.setHints(hints);
+    }
     this.canvas = document.createElement("canvas");
   }
 
@@ -57,14 +59,18 @@ export default class BarcodeDetectorZXing {
   async detect(image : ImageBitmapSource) : Promise<DetectedBarcode[]> {
     let result:ZXing.Result;
     let detectedBarcodes:DetectedBarcode[] = [];
-    let binaryBitmap;
-    if (image instanceof HTMLCanvasElement) {
-      binaryBitmap = this.createBinaryBitmapFromCanvas(image);
-    } else {
-      binaryBitmap = this.createBinaryBitmap(image as HTMLVisualMediaElement);
+    let source;
+    if ("ZXingBrowser" in window) {
+      source = image;
+    }else{
+      if (image instanceof HTMLCanvasElement) {
+        source = this.createBinaryBitmapFromCanvas(image);
+      } else {
+        source = this.createBinaryBitmap(image as HTMLVisualMediaElement);
+      }
     }
     try {
-      result = this.reader.decode(binaryBitmap);
+      result = this.reader.decode(source);
     } catch (error) {
       //not found or not supported image source
       return detectedBarcodes;
