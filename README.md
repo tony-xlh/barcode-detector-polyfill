@@ -9,11 +9,10 @@ Polyfill for the Barcode Detection API based on [Dynamsoft Barcode Reader](https
 1. Via CDN:
 
     ```html
-    <script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.6.11/dist/dbr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dynamsoft-javascript-barcode@9.6.20/dist/dbr.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/@zxing/browser@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/barcode-detection@latest/dist/barcode-detector.umd.js"></script>
     ```
-    
-    PS: ZXing is not supported via CDN.
 
 2. Via npm:
 
