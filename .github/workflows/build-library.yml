@@ -1,0 +1,24 @@
+name: build library 🏗️
+on: [push]
+env:
+  NODE_VERSION: 18
+
+jobs:
+  build_library:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/node-setup
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - run: npm run build
+
+      - run: npm pack
+
+      - name: Archive build
+        uses: actions/upload-artifact@v3
+        with:
+          name: library-build-dist
+          path: "aaronclong-barcode-detection-polyfill-*.tgz"

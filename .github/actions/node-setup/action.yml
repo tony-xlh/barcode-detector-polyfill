@@ -1,0 +1,20 @@
+name: node-setup
+description: Setup node with npm caching
+inputs:
+  node-version:
+    description: "Node version to use"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - run: npm ci
+      shell: bash
+
+    - uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-${{ inputs.node-version }}-${{ hashFiles('package-lock.json') }}

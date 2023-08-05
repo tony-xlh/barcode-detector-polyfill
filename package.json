@@ -1,42 +1,57 @@
 {
-  "name": "barcode-detection",
+  "name": "@aaronclong/barcode-detection-polyfill",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Polyfill for the Barcode Detection API based on Dynamsoft Barcode Reader or ZXing.",
-  "homepage": "https://github.com/xulihang/barcode-detector-polyfill/#readme",
+  "homepage": "https://github.com/aaronclong/barcode-detector-polyfill/#readme",
   "license": "MIT",
   "author": {
-    "name": "Xu Lihang"
+    "name": "Aaron Long"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "bugs": {
-    "url": "https://github.com/xulihang/barcode-detector-polyfill/issues"
+    "url": "https://github.com/aaronclong/barcode-detector-polyfill/issues"
   },
   "files": [
     "dist/*.js",
+    "dist/*.js.map",
     "dist/*.cjs",
+    "dist/*.cjs.map",
+    "dist/*.mjs",
+    "dist/*.mjs.map",
     "dist/*.d.ts"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xulihang/barcode-detector-polyfill.git"
+    "url": "git+https://github.com/aaronclong/barcode-detector-polyfill"
   },
-  "source": "src/barcode-detector.ts",
-  "main": "./dist/barcode-detector.js",
+  "contributors": [
+    {
+      "name": "Xu Lihang",
+      "url": "https://github.com/xulihang/barcode-detector-polyfill"
+    }
+  ],
   "exports": {
-    "require": "./dist/barcode-detector.cjs",
-    "default": "./dist/barcode-detector.modern.js"
+    "types": "./dist/*.d.ts",
+    "import": "./dist/*.mjs",
+    "require": "./dist/*.cjs",
+    "default": "./dist/*.mjs"
   },
-  "unpkg": "./dist/barcode-detector.umd.js",
-  "amdName": "BarcodeDetectorPolyfill",
   "scripts": {
-    "build": "microbundle build --globals dynamsoft-javascript-barcode=Dynamsoft.DBR,@zxing/library=ZXingBrowser",
-    "dev": "microbundle watch"
+    "dev": "microbundle watch",
+    "install:peers": "npx npm-install-peers -- -y",
+    "build": "rollup -c rollup.config.js"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "microbundle": "^0.15.0"
+    "@rollup/plugin-typescript": "^11.1.2",
+    "rollup": "^3.27.0",
+    "tslib": "^2.6.1",
+    "typescript": "^5.1.6"
   },
   "keywords": [
     "barcode",
@@ -46,8 +61,8 @@
     "pdf417",
     "qrcode"
   ],
-  "dependencies": {
-    "@zxing/library": "0.20.0",
-    "dynamsoft-javascript-barcode": "9.6.20"
+  "peerDependencies": {
+    "@zxing/browser": "^0.1.4",
+    "@zxing/library": "^0.20.0"
   }
 }
