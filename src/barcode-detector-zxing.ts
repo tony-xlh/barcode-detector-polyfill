@@ -165,7 +165,12 @@ export class BarcodeDetectorZXing extends BarcodeDetectorAbs<ZXBarcodeFormat> {
       maxY = Math.max(y, maxY);
     });
 
-    let boundingBox = new DOMRectReadOnly(minX, minY, maxX - minX, maxY - minY);
+    const boundingBox = new DOMRectReadOnly(
+      minX,
+      minY,
+      maxX - minX,
+      maxY - minY
+    );
 
     const p1 = { x: boundingBox.left, y: boundingBox.top };
     const p2 = { x: boundingBox.right, y: boundingBox.top };
@@ -174,10 +179,8 @@ export class BarcodeDetectorZXing extends BarcodeDetectorAbs<ZXBarcodeFormat> {
 
     const cornerPoints = [p1, p2, p3, p4];
 
-    let barcodeFormat = mapFormatInv.get(result.getBarcodeFormat());
-    if (!barcodeFormat) {
-      barcodeFormat = "unknown";
-    }
+    const barcodeFormat =
+      mapFormatInv.get(result.getBarcodeFormat()) ?? "unknown";
 
     return {
       boundingBox: boundingBox,

@@ -30,14 +30,14 @@ export interface DetectedBarcode {
   rawValue: string;
 }
 
-export interface IBarcodeDetector<BFormat = BarcodeFormat> {
+export interface IBarcodeDetector {
   detect(image: ImageBitmapSource): Promise<DetectedBarcode[]>;
 }
 
 export abstract class BarcodeDetectorAbs<BFormat = BarcodeFormat>
-  implements IBarcodeDetector<BFormat>
+  implements IBarcodeDetector
 {
-  public constructor(options?: IBarcodeOptions<BFormat>) {}
+  public constructor(private options?: IBarcodeOptions<BFormat>) {}
   public abstract detect(image: ImageBitmapSource): Promise<DetectedBarcode[]>;
 
   public static getSupportedFormats(): Promise<BarcodeFormat[]> {

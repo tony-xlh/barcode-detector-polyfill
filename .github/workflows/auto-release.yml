@@ -1,0 +1,83 @@
+on:
+  workflow_dispatch:
+    inputs:
+      next_version:
+        description: "Version to bump the package to"
+        required: true
+      prev_version:
+        description: "Prior version to generate changelog from"
+        required: true
+env:
+  NODE_VERSION: 18
+jobs:
+  gen_change_log:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: "Build Changelog"
+        id: changelog
+        uses: metcalfc/changelog-generator@v4.1.0
+        with:
+          base-ref: ${{ inputs.prev_version }}
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get the changelog
+        run: |
+          frag=$(cat <<EOF
+           ${{ steps.changelog.outputs.changelog }}
+          EOF)
+          echo "$frag" >> CHANGE_LOG_FRAG.md
+
+      - name: Archive CHANGE_LOG_FRAG
+        uses: actions/upload-artifact@v3
+        with:
+          name: change-log-frag
+          path: "CHANGE_LOG_FRAG.md"
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Bump version
+        shell: bash
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          npm version ${{ inputs.next_version }} -m "build(version): Bump version to %s"
+          git push
+
+  build_library:
+    needs: gen_change_log
+    uses: ./.github/workflows/build-library.yml
+
+  create_release:
+    permissions:
+      contents: write
+    needs: [gen_change_log, build_library]
+    steps:
+      - name: Create artifacts folder
+        run: mkdir -p artifacts
+        shell: bash
+
+      - uses: actions/download-artifact@v3
+        id: download
+        with:
+          path: artifacts
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: artifacts/change-log-frag/CHANGE_LOG_FRAG.md
+          files: |
+            artifacts/library-build-dist/*
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Publish to NPM
+        shell: bash
+        run: |
+          npm set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
+          npm publish artifacts/library-build-dist/aaronclong-barcode-detection-polyfill-${{ inputs.next_version }}.tgz

@@ -1,5 +1,7 @@
 name: build library 🏗️
-on: [push]
+on:
+  push:
+  workflow_call:
 env:
   NODE_VERSION: 18
 

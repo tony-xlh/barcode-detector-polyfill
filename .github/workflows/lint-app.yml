@@ -1,0 +1,18 @@
+name: lint code
+on:
+  pull_request:
+env:
+  NODE_VERSION: 18
+
+jobs:
+  lint_code:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/node-setup
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Run Linter
+        run: npm run lint
+        shell: bash
