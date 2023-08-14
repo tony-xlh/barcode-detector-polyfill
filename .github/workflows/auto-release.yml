@@ -52,6 +52,7 @@ jobs:
     uses: ./.github/workflows/build-library.yml
 
   create_release:
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     needs: [gen_change_log, build_library]
