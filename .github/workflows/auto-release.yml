@@ -88,4 +88,4 @@ jobs:
           version=$(echo "${{github.ref}}" | sed 's/refs\/tags\/v//g')
           echo "This the version ${version}"
           npm set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
-          npm publish artifacts/library-build-dist/aaronclong-barcode-detection-polyfill-${version}.tgz
+          npm publish artifacts/library-build-dist/aaronclong-barcode-detection-polyfill-${version}.tgz --access public
