@@ -85,7 +85,7 @@ jobs:
       - name: Publish to NPM
         shell: bash
         run: |
-          version=$(echo "${{github.ref}}" | sed 's/v//g'
+          version=$(echo "${{github.ref}}" | sed 's/refs\/tags\/v//g')
           echo "This the version ${version}"
           npm set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
           npm publish artifacts/library-build-dist/aaronclong-barcode-detection-polyfill-${version}.tgz
