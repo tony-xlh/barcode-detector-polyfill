@@ -1,7 +1,7 @@
 {
   "name": "@aaronclong/barcode-detection-polyfill",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Polyfill for the Barcode Detection API based on Dynamsoft Barcode Reader or ZXing.",
   "homepage": "https://github.com/aaronclong/barcode-detector-polyfill/#readme",
   "license": "MIT",
