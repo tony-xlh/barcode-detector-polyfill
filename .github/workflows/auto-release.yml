@@ -1,12 +1,10 @@
 on:
-  workflow_dispatch:
-    inputs:
-      next_version:
-        description: "Version to bump the package to"
-        required: true
-      prev_version:
-        description: "Prior version to generate changelog from"
-        required: true
+  push:
+    # https://docs.github.com/en/webhooks-and-events/events/github-event-types#event-payload-object-for-pushevent
+    # https://stackoverflow.com/a/69919067
+    tags:
+      - "v*"
+
 env:
   NODE_VERSION: 18
 jobs:
@@ -15,11 +13,29 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - id: last-release
+        uses: pozetroninc/github-action-get-latest-release@v0.7.0
+        continue-on-error: true
+        with:
+          owner: aaronclong
+          repo: barcode-detector-polyfill
+          excludes: prerelease, draft
+
+      - name:
+        if: steps.last-release.outcome != 'failure'
+        run: |
+          echo "LAST_RELEASE_TAG=${{steps.last-release.outputs.release}}" >> $GITHUB_ENV
+
+      - name:
+        if: steps.last-release.outcome == 'failure'
+        run: |
+          echo "LAST_RELEASE_TAG=v0.0.0" >> $GITHUB_ENV
+
       - name: "Build Changelog"
         id: changelog
         uses: metcalfc/changelog-generator@v4.1.0
         with:
-          base-ref: ${{ inputs.prev_version }}
+          base-ref: ${{ env.LAST_RELEASE_TAG }}
           myToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get the changelog
@@ -34,18 +50,6 @@ jobs:
         with:
           name: change-log-frag
           path: "CHANGE_LOG_FRAG.md"
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Bump version
-        shell: bash
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          npm version ${{ inputs.next_version }} -m "build(version): Bump version to %s"
-          git push
 
   build_library:
     needs: gen_change_log
@@ -80,5 +84,7 @@ jobs:
       - name: Publish to NPM
         shell: bash
         run: |
+          version=$(echo "${{github.ref}}" | sed 's/v//g'
+          echo "This the version ${version}"
           npm set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
-          npm publish artifacts/library-build-dist/aaronclong-barcode-detection-polyfill-${{ inputs.next_version }}.tgz
+          npm publish artifacts/library-build-dist/aaronclong-barcode-detection-polyfill-${version}.tgz
