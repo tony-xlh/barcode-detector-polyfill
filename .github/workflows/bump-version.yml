@@ -25,5 +25,4 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           npm version ${{ inputs.next_version }} -m "build(version): Bump version to %s"
-          git tag v${{ inputs.next_version }} -m "build(version): Bump version to ${{ inputs.next_version }}" 
           git push --follow-tags
