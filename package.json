@@ -34,13 +34,21 @@
     }
   ],
   "exports": {
-    "types": "./dist/*.d.ts",
-    "import": "./dist/*.mjs",
-    "require": "./dist/*.cjs",
-    "default": "./dist/*.mjs"
+    "./barcode-api": {
+      "types": "./dist/barcode-api.d.ts",
+      "import": "./dist/barcode-api.mjs",
+      "require": "./dist/barcode-api.cjs",
+      "default": "./dist/barcode-api.mjs"
+    },
+    "./barcode-detector-zxing": {
+      "types": "./dist/barcode-detector-zxing.d.ts",
+      "import": "./dist/barcode-detector-zxing.mjs",
+      "require": "./dist/barcode-detector-zxing.cjs",
+      "default": "./dist/barcode-detector-zxing.mjs"
+    }
   },
   "scripts": {
-    "dev": "microbundle watch",
+    "dev": "rollup --watch -c rollup.config.js",
     "install:peers": "npx npm-install-peers -- -y",
     "build": "rollup -c rollup.config.js",
     "lint": "eslint ./src"
